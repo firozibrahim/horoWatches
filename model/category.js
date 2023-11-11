@@ -6,7 +6,8 @@ const CategorySchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  time:{type:Date}
+  time:{type:Date},
+  status:{type:Boolean,default:true}
 });
 
 const Category = mongoose.model("Categories", CategorySchema);

@@ -54,9 +54,6 @@ const productUploadSchema = new Schema({
     Specification3: {
       type: String,
     },
-    Specification4: {
-      type: String,
-    },
   });
 
 

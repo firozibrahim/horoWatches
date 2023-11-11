@@ -1,34 +1,61 @@
 const User = require("../model/usermodel");
 const OTP = require("../model/otpModel");
+const Admin = require("../model/adminModel");
 const sendOTP = require("./otpController");
-const {hashData,verifyHashedData}=require("../utils/hashData")
+const productUpload=require("../model/productModel")
+const { hashData, verifyHashedData } = require("../utils/hashData");
 
 const home = async (req, res) => {
-  if (req.session.logged) {
-    res.redirect("/user/home");
+  const email= req.session.email
+  const user=await User.findOne({Email:email})
+  const product=await productUpload.find()
+  if (req.session.logged&&user.access==="granted") {
+    res.render("./user/user-home",{product});
+  } else if (req.session.adminlogged) {
+    res.redirect("/admin");
   } else {
-    // const data = await productUpload.find()
-    res.render("./user/landingPage", { err: false });
+    res.render("./user/landingPage", {title:home,product });
   }
 };
 
 const tologin = (req, res) => {
-  res.render("./user/login");
+  if (req.session.logged) {
+    res.redirect("/user/home");
+  } else if (req.session.adminlogged) {
+    res.redirect("/admin");
+  } else {
+    res.render("./user/login");
+  }
 };
-const userLogin = async (req, res) => {
+const login = async (req, res) => {
   try {
     const emailToFind = req.body.email;
-    console.log("email", emailToFind);
     const user = await User.findOne({ Email: emailToFind });
+    const admin = await Admin.findOne({ Email: emailToFind });
+
     if (!user) {
+      if (admin) {
+        // console.log(req.body.password,admin.Password);
+        if (req.body.password === admin.Password) {
+          req.session.admin = admin.Username;
+          req.session.adminlogged = true;
+          req.session.email = admin.Email;
+          return res.json({ success: true, adminAuth: true });
+        } else {
+          return res.json({
+            success: false,
+            error: "wrong password for admin",
+          });
+        }
+      }
       return res.json({ success: false, error: "user not found" });
     } else {
-      if (verifyHashedData(req.body.password, user.Password)) {
-        if (user.access) {
+      if (await verifyHashedData(req.body.password, user.Password)) {
+        if (user.access==="granted") {
           req.session.user = user.Username;
           req.session.logged = true;
           req.session.email = user.Email;
-          return res.json({ success: true });
+          return res.json({ success: true, userAuth: true });
         } else {
           return res.json({ success: false, error: "user is blocked" });
         }
@@ -41,32 +68,53 @@ const userLogin = async (req, res) => {
     return res.json({ success: false, error: "invalid username or password" });
   }
 };
+const resendotp = async (req,res)=>{
+  try{
+    const email=req.session.email;
+    const createOTP = await sendOTP(email)
+    res.redirect("/user/otp")
+  }catch(err){
+    console.log(err)
+    console.log("cant resend otp now");
+  }
+}
+
 const tosignUp = (req, res) => {
   if (req.session.logged) {
     res.redirect("/user/home");
+  } else if (req.session.adminlogged) {
+    res.redirect("/admin");
   } else {
     res.render("./user/signUp", { err: false });
   }
 };
 const signUp = async (req, res) => {
-  let emailToFind = req.body.email;
-  console.log(emailToFind);
-  let emailExists = await User.findOne({ Email: emailToFind });
-  if (emailExists) {
-    res.json({success:false,message:"USER ALREADY EXIST"})
-  } else {
-    // console.log(typeof(req.body.password))
-    const hashedPassword =hashData(req.body.password, 10);
-    const data = {
-      userName: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-    };
-    req.session.data = data;
-    req.session.email = data.email;
-    req.session.signotp = true;
+  // console.log(req.body);
+  try {
+    let emailToFind = req.body.email;
+    // console.log("emailto find",emailToFind);
+    let emailExists = await User.findOne({ Email: emailToFind });
+    if (emailExists) {
+      res.json({ success: false, message: "USER ALREADY EXIST" });
+    } else {
+      console.log(req.body.password);
+      const hashedPassword = await hashData(req.body.password, 10);
+      // console.log(hashedPassword);
+      const data = {
+        Username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+      };
+      req.session.data = data;
+      req.session.email = data.email;
+      req.session.signotp = true;
+      req.session.user = data.userName;
 
-    res.json({success:true})
+      res.json({ success: true });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ status: false, error: "error" });
   }
 };
 const otpSender = async (req, res) => {
@@ -93,25 +141,29 @@ const otp = (req, res) => {
   res.render("user/otpPage", { err: false });
 };
 const validateOtp = async (req, res) => {
-  // console.log(req.body);
-  console.log(req.session.signotp);
+  // console.log(req.session.userdata);
   if (req.session.forgot) {
     try {
-      const email = req.session.email;
-      console.log("forgot confirmation:", email);
-      const otp = await OTP.findOne({ email: email });
-      if (Date.now() > otp.expiredAt) {
-        await OTP.deleteOne({});
+      const data = req.session.userdata;
+      // console.log("jjj",data);
+      console.log("forgot confirmation:", data.email);
+      const otp = await OTP.findOne({ email: data.email });
+      console.log(otp);
+      if (Date.now() > otp.expireAt) {
+        console.log("reached at delete otp");
+        await OTP.deleteOne({ email: data.email });
       } else {
         const hashed = otp.otp;
-        const { code, email } = req.body;
+        console.log("reached hashed");
+        const code = req.body.otp;
+        console.log(`hash:${hashed},otp:${code}`);
         if (hashed === code) {
           req.session.forgot = false;
-          res.render("user/newPassword");
+          res.json({ status: true });
         } else {
-          req.session.userdata = "";
+          console.log("invalid otp");
           req.session.err = "invalid otp";
-          res.render("user/otpPage", { err: "invalid OTP" });
+          res.json({ status: false, err: "invalid OTP" });
         }
       }
     } catch (err) {
@@ -121,20 +173,22 @@ const validateOtp = async (req, res) => {
   } else if (req.session.signotp) {
     try {
       const data = req.session.data;
-      // console.log(data)
+      console.log(data);
       const otp = await OTP.findOne({ email: data.email });
-      if (Date.now() > otp.expiredAt) {
+      if (Date.now() > otp.expireAt) {
         await OTP.deleteOne({ email: data.email });
       } else {
         const hashed = otp.otp;
-        console.log("hashed:", hashed);
+        // console.log("hashed:", hashed);
         const code = req.body.otp;
         console.log(code);
+        // console.log(data);
         req.session.email = data.email;
+
         if (hashed == code) {
-          console.log(data);
+          // console.log(data);
           const newUser = new User({
-            Username: data.userName,
+            Username: data.Username,
             Email: data.email,
             Password: data.password,
             access: "granted",
@@ -143,10 +197,10 @@ const validateOtp = async (req, res) => {
           await newUser.save();
           req.session.logged = true;
           req.session.signotp = false;
-          res.json({ status: true });
+          res.json({ status: true, route: "/user/home" });
         } else {
           req.session.err = "invalid otp";
-          res.render("user/otpPage", { err: "invalid otp" });
+          res.json({ status: false, error: "invalid otp" });
         }
       }
     } catch (err) {
@@ -157,15 +211,16 @@ const validateOtp = async (req, res) => {
 };
 const toForgotPass = (req, res) => {
   req.session.forgot = true;
-  res.render("./user/forget-pass");
+  res.render("user/forget-pass");
 };
 const forgotPass = async (req, res) => {
   try {
     console.log(req.body);
     const check = await User.findOne({ Email: req.body.email });
-    req.session.email = check.Email;
+    console.log(check);
 
     if (check) {
+      req.session.email = check.Email;
       console.log("good to go:", check);
       const userdata = {
         email: check.Email,
@@ -177,53 +232,49 @@ const forgotPass = async (req, res) => {
       req.session.userdata = userdata;
       req.session.email = email;
       console.log("Sessiosiiii: ", req.session.email);
-      res.redirect("/user/toOtp");
+      console.log(req.session.userdata);
+      res.json({ success: true });
     } else {
       console.log(check);
       req.session.err = "no email found";
-      res.redirect("/user/forget-pass");
+      res.json({ success: false, message: "email not found" });
     }
   } catch (err) {
     console.log(err);
     req.session.err = "no email found";
-    res.redirect("/user/forget-pass");
+    res.json({ success: false, message: "something wrong" });
   }
 };
+const toNewpassword = async (req, res) => {
+  res.render("user/new-password");
+};
 const passwordReset = async (req, res) => {
+
+console.log("reached");
   try {
     console.log("this is forget pass reset");
     console.log(req.body);
     console.log("session........", req.session.email);
-    const pass = hashData(req.body.password, 10);
+    const pass =await hashData(req.body.password, 10);
+    console.log(pass);
     const email = req.session.email;
     console.log(email);
     const update = await User.updateOne(
       { Email: email },
-      { $set: { password: pass } }
+      { $set: { Password: pass } }
     );
+    // console.log(update);
     req.session.logged = true;
     // req.session.pass_reset = false
-    res.redirect("/user/indexToLogin");
+    res.json({success:true});
   } catch (err) {
-    req.flash("errmsg", "something went wrong");
     console.log(err);
   }
 };
-const userLog = async (req, res) => {
-  if (req.session.logged || req.user) {
-    const user = req.session.user;
-    console.log(user);
-    console.log(req.session.logged);
-    // const data = await productUpload.find();
-    res.render("user/user-home", { title: "Home", user });
-  } else {
-    console.log("login");
-    res.redirect("/");
-  }
-};
+
 const logout = (req, res) => {
   req.session.destroy();
-  res.json({ status: true });
+  res.redirect("/tologin");
 };
 module.exports = {
   home,
@@ -233,10 +284,12 @@ module.exports = {
   otpSender,
   otp,
   validateOtp,
-  userLogin,
+  login,
   logout,
   toForgotPass,
   forgotPass,
   passwordReset,
-  userLog,
+
+  toNewpassword,
+  resendotp,
 };

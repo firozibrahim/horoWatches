@@ -1,63 +1,55 @@
 const express=require('express')
-const admin=express.Router()
+const router=express.Router()
 const users=require('../model/usermodel')
 const adminController=require('../controller/adminController')
+const productController=require('../controller/productController')
 const multer=require('multer')
 const upload = require("../middlewares/multer");
 const Products = require("../model/productModel");
-const adminAuth=require('../middlewares/AdminAuth')
+const adminAuth=require('../middlewares/adminAuth')
 
 
 
+router.get("/",adminAuth.verifyAdmin,adminController.toDashBoard);
+router.get("/toproducts",adminAuth.verifyAdmin,adminController.toProduct);
+router.get('/add-products',adminAuth.verifyAdmin,productController.toAddProduct);
+router.get('/customers',adminAuth.verifyAdmin,adminController.userDataSharing);
+router.get('/logout',adminAuth.verifyAdmin, adminController.signout)
+router.get('/category',adminAuth.verifyAdmin,adminController.tocategory)
+router.get('/add-category',adminAuth.verifyAdmin,adminController.toAddCategory)
+router.post('/addcategory',adminAuth.verifyAdmin,adminController.addCategory)
+router.get('edit-category',adminAuth.verifyAdmin,adminController.toEditcategory)
+router.get('/edit-category/:id',adminAuth.verifyAdmin,adminController.editCatagory)
+router.post('/DoneEdit-category/:id',adminAuth.verifyAdmin,adminController.afterEditCatagory)
+router.get('/delete-category/:id',adminAuth.verifyAdmin,adminController.deleteCatagory)
+router.post("/addproduct", upload.array('productMainImage',4),productController.addProduct);
+router.get('/edit-product/:id',productController.toEditProduct)
+router.get('/delete-product/:id',productController.deleteProduct)
+const uploadField=[
+    {name:"productMainImage0",maxCount:1},
+    {name:"productMainImage1",maxCount:1},
+    {name:"productMainImage2",maxCount:1},
+    {name:"productMainImage3",maxCount:1},
+]
+router.post('/postEdit-product/:id',upload.fields(uploadField),productController.EditProduct)
+router.get('/block/:id',adminController.UserStatus)
+router.post("/userSearch",adminAuth.verifyAdmin,adminController.userSearch);
+router.post("/search", adminAuth.verifyAdmin,productController.searchProduct)
+
+// router.post('/edit-product/:id',adminController.EditProduct)
+
+// //login
+// // admin.get('/admin',adminAuth.adminExist,adminController.toLogin)
+// // admin.post('/log',adminAuth.adminExist,adminController.loginadmin)
+// admin.get('/',adminAuth.verifyAdmin,adminController.toDashBoard)
 
 
-//login
-admin.get('/',adminAuth.adminExist,adminController.toLogin)
-admin.post('/log',adminAuth.adminExist,adminController.loginadmin)
-admin.get('/costomers',adminController.userDataSharing);
-admin.get('/signout',adminAuth.verifyAdmin, adminController.signout)
+// admin.get('/toproducts',adminController.toproducts)
+// admin.get('/products',adminController.productData)
 
 
-admin.get('/add-products',adminController.toAddProduct)  
-
-  admin.post("/addproduct", upload.array('images',4),adminController.addProduct);
-  admin.get('/toproducts',adminController.toproducts)
-  admin.get('/products',adminController.productData)
-  admin.get('/delete-product/:id',adminController.deleteProduct)
-  admin.get('/edit-product/:id',adminController.toEditProduct)
-  admin.post('/postEdit-product/:id',adminController.EditProduct)
-
-admin.get('/dashboard',adminAuth.verifyAdmin,adminController.toDashBoard)
-admin.get('/products',adminAuth.verifyAdmin,adminController.toProduct)
-admin.get('/catogory',adminAuth.verifyAdmin,adminController.categoryData)
-admin.get('/block/:id',adminController.UserStatus)
-admin.get('/toAdd-category',adminAuth.verifyAdmin,adminController.tocategory)
-admin.post('/add-category',adminAuth.verifyAdmin,adminController.addCategory)
-admin.get('edit-catogory',adminAuth.verifyAdmin,adminController.toEditcategory)
-admin.get('/edit-catogory/:id',adminAuth.verifyAdmin,adminController.editCatagory)
-admin.post('/DoneEdit-category/:id',adminAuth.verifyAdmin,adminController.afterEditCatagory)
-admin.get('/delete-catogory/:id',adminAuth.verifyAdmin,adminController.deleteCatagory)
-admin.post("/search", async (req, res) => {
-  var i = 0;
-  const getdata = req.body;
-  console.log(getdata);
-  let data = await Products.find({
-    ProductName: { $regex: "^" + getdata.search, $options: "i" },
-  });
-  console.log(`Search Data ${data} `);
-  res.render("./admin/products", { title: "Home", data, i });
-});
-
-admin.post("/userSearch", async (req, res) => {
-  var i = 0;
-  const getdata = req.body;
-  console.log(getdata);
-  let userData = await users.find({
-    userName: { $regex: "^" + getdata.search, $options: "i" },
-  });
-
-  res.render("./admin/costomers", { title: "Home", userData, i });
-});
+// admin.get('/products',adminAuth.verifyAdmin,adminController.toProduct)
+// admin.get('/catogory',adminAuth.verifyAdmin,adminController.categoryData)
 
 
 
@@ -68,4 +60,5 @@ admin.post("/userSearch", async (req, res) => {
 
 
 
-module.exports=admin;
+
+module.exports=router;

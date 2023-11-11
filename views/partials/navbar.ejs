@@ -1,19 +1,41 @@
 <nav class="navb navbar navbar-expand-lg">
 
-    <a class="navbar-brand" href="/home"><img src="user/images/logo-white.png" id="logo"></a>
-      <ul class="links list-unstyled">
-        <li class="li"><a href="/#">Home</a></li>
-        <li class="li"><a href="/#">About us</a></li>
-        <li class="li"><a href="/#">Shop</a></li>
-        <li class="li"><a href="/#">Contact Us</a></li>
-        <li class="li"><a href="/#">my Account</a></li>
+  <a class="navbar-brand" href="/home"><img src="/user/images/logo-white.png" id="logo"></a>
+  <ul class="links list-unstyled">
+    <li class="li"><a href="/#">Home</a></li>
+    <li class="li"><a href="/#">About us</a></li>
+    <li class="li"><a href="/user/toProduct-list">Shop</a></li>
+    <li class="li"><a href="/#">Contact Us</a></li>
+    <li class="li"><a href="/#">my Account</a></li>
+  </ul>
+  <form class="form my-2 my-lg-0">
+    <input class="form-control searchinput" type="search" placeholder="Search" aria-label="Search">
+    <button class="searchbutton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+  </form>
+  <div class="right">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle second-text fw-bold" href="" id="navbarDropdown" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user me-2"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" href="#">Settings</a></li>
+          <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+          <li><a class="dropdown-item" href="/wishlist">wishlist</a></li>
+
+          <li><a class="dropdown-item" href="/cart">cart</a></li>
         </ul>
-      <form class="form my-2 my-lg-0">
-        <input class="form-control searchinput" type="search" placeholder="Search" aria-label="Search">
-        <button class="searchbutton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </form>
-      <div class="right">
-        <a href="/cart"><i class="fa-sharp fa-solid fa-cart-shopping fa-xl" style="color: #e1e1e1;"></i></a>
-        <a href="/wishlist"><i class="fa-solid fa-heart-circle-plus fa-xl" style="color: #e2e2e2;"></i></a>
-      </div>
-  </nav>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>

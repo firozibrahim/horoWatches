@@ -1,323 +1,199 @@
-const users = require('../model/usermodel');
-const Category = require('../model/category');
-const { ObjectId } = require('mongodb');
-const productUpload = require('../model/productModel');
-// Admin login credentials
-const credential = {
-    email: 'admin@gmail.com',
-    password: '123',
-};
-
-const loginadmin = async (req, res) => {
-    const Email = req.body.email;
-    const Password = req.body.password;
-    if (Email === credential.email && Password === credential.password) {
-        console.log('Admin logged');
-        req.session.adminlogged = true;
-        res.render('./admin/dashboard', { title: 'dashboard', err: false });
-    } else {
-        console.log('Admin logging failed');
-        res.render('./admin/login', { err: 'Invalid password or email' });
-    }
-};
-
-
-const toLogin = (req, res) => {
-    res.render('admin/login', { title: "admin Login" })
-}
+const users = require("../model/usermodel");
+const Category = require("../model/category");
+const productUpload = require("../model/productModel");
 
 const toEditcategory = (req, res) => {
-    res.redirect('./admin/edit-cotogory')
-}
-
-const toDashBoard = (req, res) => {
-    res.render('./admin/home', { title: "dash board" })
-}
-
-const toProduct = (req, res) => {
-    res.render('/admin/products', { title: "products" })
-}
-
-const signout = async (req, res) => {
-    console.log('Signout');
-    req.session.destroy();
-    res.redirect('/');
+  res.redirect("./admin/edit-category");
 };
 
+const toDashBoard = (req, res) => {
+  res.render("./admin/dashboard", { title: "dashboard" });
+};
 
+const toProduct = async (req, res) => {
+  try {
+    const data = await productUpload.find();
+    res.render("admin/products", { title: "category", data });
+  } catch (error) {
+    console.log("An error occurred", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
-
-
-
+const signout = async (req, res) => {
+  console.log("Signout");
+  req.session.destroy();
+  res.redirect("/");
+};
 
 //------------------------------------------<<<<<<<<<<<USER MANEGEMENT>>>>>>>>>>>>>>>>>-----------------------------------
 const UserStatus = async (req, res) => {
-    console.log('This is userstatus');
-    const id = req.params.id;
-    console.log('Receive request ' + id);
+  console.log("This is userstatus");
+  const id = req.params.id;
+  console.log("Receive request " + id);
 
-    const user = await users.findOne({ _id: id });
+  const user = await users.findOne({ _id: id });
 
-    if (!user) {
-        return res.status(404).send('User not found');
-    }
-    const newStatus = !user.status;
-    await users.updateOne(
-        { _id: id },
-        { $set: { status: newStatus } }
-    );
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+  let newStatus = "";
+  if (user.access === "granted") {
+    newStatus = "blocked";
+  } else if (user.access === "blocked") {
+    newStatus = "granted";
+  }
 
-    console.log(`User ${ user.userName } is ${ newStatus? 'unblocked': 'blocked' }`);
-    res.redirect('/admin/costomers');
+  await users.updateOne({ _id: id }, { $set: { access: newStatus } });
+
+  console.log(
+    `User ${user.Username} is ${newStatus ? "unblocked" : "blocked"}`
+  );
+  res.redirect("/admin/customers");
 };
 
 const userDataSharing = async (req, res) => {
-    const data = await users.find();
-    console.log("this is user data sharing area");
-    res.render('./admin/costomers.ejs', { title: 'Costomers', userData: data });
+  const data = await users.find();
+  console.log("this is user data sharing area");
+  res.render("./admin/customers.ejs", { title: "Customers", userData: data });
 };
+const userSearch = async (req, res) => {
+  var i = 0;
+  const getdata = req.body;
+  console.log(getdata);
+  let userData = await users.find({
+    Username: { $regex: "^" + getdata.search, $options: "i" },
+  });
 
-const categoryData = async (req, res) => {
-    const data = await Category.find();
-    console.log("this is catogory data");
-    res.render('./admin/catogory', { title: 'category', categoryData: data });
+  res.render("./admin/customers", { title: "Home", userData, i });
 };
-
-
-
-
-
 
 //---------------------------------------------------PRODUCT ---------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-const toproducts = async (req, res) => {
-    try {
-        const data = await productUpload.find();
-        res.render('admin/products', { title: 'category', data });
-    } catch (error) {
-        console.log('An error occurred', error);
-        res.status(500).send('Internal Server Error');
-    }
-};
-
-const toAddProduct = (req, res) => {
-    res.render('./admin/add-product', { title: 'Add Products' });
-};
-
-const productData = async (req, res) => {
-    try {
-        const data = await productUpload.find();
-        res.render('admin/products', { title: 'category', data });
-    } catch (error) {
-        console.log('An error occurred', error);
-        res.status(500).send('Internal Server Error');
-    }
-};
-
-const addProduct = async (req, res) => {
-    const productDetails = req.body;
-    try {
-        const allfiles = req?.files;
-        const images = req.files;
-        let allImage = [];
-        for (let i = 0; i < images.length; i++) {
-            allImage[i] = images[i].filename
-        }
-
-        images.forEach((value, index) => {
-            console.log("images" + index, value);
-        })
-
-
-
-        const uploaded = await productUpload.create({
-            ...productDetails,
-            images: allImage,
-        });
-
-        if (uploaded) {
-            console.log('Product added');
-            res.redirect('/admin/catogory');
-        }
-    } catch (error) {
-        console.log('An error happened');
-        throw error;
-    }
-};
-
-
-
-const toEditProduct = async (req, res) => {
-    const id = req.params.id;
-    console.log("to edit product");
-    const data = await productUpload.findOne({ _id: id });
-    console.log(data);
-    res.render("admin/edit-product", { data });
-}
-
-
-
-const EditProduct = async (req, res) => {
-    try {
-        const productDetails = req.body;
-        console.log('tt' + req.body);
-        console.log(productDetails);
-        let id = req.params.id
-        let allImages_filename = []
-        let noImage;
-        const allImages = req.files;
-
-
-        const uploaded = await productUpload.updateOne({ _id: id }, {
-            $set: {
-                ProductName: req.body.ProductName,
-                Description: req.body.Description,
-                Specification1: req.body.Specification1,
-                Specification2: req.body.Specification2,
-                Specification3: req.body.Specification3,
-                Specification4: req.body.Specification4,
-                Price: req.body.Price,
-                DiscountAmount: req.body.DiscountAmount,
-                AvailableQuantity: req.body.AvailableQuantity,
-                Category: req.body.Category,
-                images: allImages_filename.length > 0 ? allImages_filename : req.body.image,
-
-            }
-        });
-
-        if (uploaded) {
-            console.log('Product updated');
-            console.log('update image : ---------------', req.files);
-            res.redirect('/admin/products');
-        }
-    } catch (error) {
-        console.log('An error happened');
-        throw error;
-    }
-};
-
-
-const deleteProduct = async (req, res) => {
-    console.log('This is delete Product');
-    const id = req.params.id;
-    console.log('Receive request ' + id);
-
-    const data = await productUpload.findOne({ _id: id });
-
-    if (!data) {
-        return res.status(404).send('Product not found');
-    }
-    const newStatus = !data.status;
-    await productUpload.updateOne(
-        { _id: id },
-        { $set: { status: newStatus } }
-    );
-
-    console.log(`product ${ data.ProductName } is ${ newStatus? 'unBanned': 'Banned' }`);
-    res.redirect('/admin/products');
-};
-
+// const products = async (req, res) => {
+//     try {
+//         const data = await productUpload.find();
+//         res.render('admin/products', { title: 'category', data });
+//     } catch (error) {
+//         console.log('An error occurred', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 
 //------------------------------------------------CATEGORY----------------------------------------------------------
 
 const tocategory = async (req, res) => {
-    res.render('./admin/add-category', { title: 'category', err: false });
+  const data = await Category.find();
+  res.render("./admin/category", { title: "category", categoryData: data });
 };
-
+const toAddCategory = async (req, res) => {
+  res.render("./admin/addCategory", { title: "category", err: false });
+};
 
 const addCategory = async (req, res) => {
-    try {
-        const { CategoryName } = req.body;
+  console.log("add category");
+  try {
+    // console.log("category add");
+    const CategoryName = req.body.categoryName.toLowerCase();
+    console.log("Name is " + CategoryName);
 
-        console.log('Name is ' + CategoryName);
+    const data = {
+      CategoryName: CategoryName,
+    };
+    const check = await Category.find({ CategoryName });
+    if (check.length == 0) {
+      const insert = await Category.create(data);
 
-        const data = {
-            CategoryName: CategoryName,
-        };
-        const check = await Category.find({ CategoryName: CategoryName })
-        if (check.length == 0) {
-            const insert = await Category.create(data);
-
-            console.log('Category added');
-            res.redirect('/admin/catogory');
-        } else {
-            res.render('./admin/add-category', { err: "Catagory Already Exit" })
-
-        }
-    } catch (err) {
-        console.log('Error found', err);
+      console.log("Category added");
+      res.json({ success: true, message: "category added" });
+    } else {
+      res.json({ success: false, err: "Catagory Already Exit" });
     }
+  } catch (err) {
+    console.log("Error found", err);
+  }
 };
-
 
 const deleteCatagory = async (req, res) => {
-    try {
-        // Delete category by ID
-        const id = req.params.id;
-        const cetagory = await Category.deleteOne({ _id: id });
-        res.redirect('/admin/catogory');
-    } catch (error) {
-        console.log('Error occurred while deleting category');
-    }
+  try {
+    // Delete category by ID
+    const id = req.params.id;
+    const data = await Category.findOne({ _id: id });
+    const newStatus = !data.status;
+    const deleted = await Category.updateOne(
+      { _id: id },
+      { $set: { status: newStatus } }
+    );
+    res.redirect("/admin/category");
+  } catch (error) {
+    console.log("Error occurred while deleting category");
+  }
 };
 
-
 const editCatagory = async (req, res) => {
-    try {
-        const id = req.params.id;
-        console.log(id);
+  try {
+    const id = req.params.id;
+    console.log(id);
 
-        const catagory = await Category.findOne({ _id: id });
-        console.log("this Edit catogory");
-        res.render("admin/edit-catogory", { catagory });
-    } catch (error) {
-        console.log("an error occured while editing the catagory");
-    }
-}
-
+    const category = await Category.findOne({ _id: id });
+    console.log("this Edit catogory");
+    res.render("admin/edit-category", {
+      category,
+      title: `edit ${category.CategoryName}`,
+    });
+  } catch (error) {
+    console.log("an error occured while editing the category");
+  }
+};
 
 const afterEditCatagory = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const catagory = req.body.CategoryName;
-        console.log(catagory);
-        await Category.updateOne(
-            { _id: id },
-            {
-                $set: {
-                    CategoryName: catagory,
-                },
-            }
-        );
-        console.log("Editing is done");
-        res.redirect("/admin/catogory");
-    } catch (error) {
-        console.log("error occured while uploading catagory");
-    }
-}
+  const categoryId = req.params.id;
+  const newCategoryName = req.body.categoryName;
+  console.log(categoryId + "_____________id");
+  console.log(newCategoryName + "_________________");
+  try {
+    // Check if the edited category name already exists
+    const existingCategory = await Category.findOne({
+      CategoryName: newCategoryName,
+    });
 
+    if (existingCategory) {
+      // Category with the same name already exist
+      res.json({ success: false, err: "Category already exists" });
+    } else {
+      // Update the category name in the database
+      await Category.updateOne(
+        { _id: categoryId },
+        {
+          $set: {
+            CategoryName: newCategoryName,
+          },
+        }
+      );
+
+      res.json({ success: true });
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, err: "Failed to update the category name." });
+  }
+};
 
 module.exports = {
-    loginadmin,
-    UserStatus,
-    userDataSharing,
-    addProduct,
-    toAddProduct,
-    categoryData,
-    addCategory,
-    tocategory,
-    toproducts,
-    productData,
-    signout,
-    deleteCatagory,
-    editCatagory,
-    afterEditCatagory,
-    deleteProduct,
-    toEditProduct,
-    EditProduct,
-    toLogin,
-    toEditcategory,
-    toDashBoard,
-    toProduct,
-    
+  toProduct,
+  UserStatus,
+  userDataSharing,
+  toAddCategory,
+  addCategory,
+  tocategory,
+  userSearch,
+  signout,
+  deleteCatagory,
+  editCatagory,
+  afterEditCatagory,
+  toEditcategory,
+  toDashBoard,
+  toProduct,
 };
