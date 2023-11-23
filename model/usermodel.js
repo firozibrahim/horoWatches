@@ -9,6 +9,7 @@ const usersSchema = new mongoose.Schema({
   Role: { type: String},
   Address: [
     {
+      name:{type:String},
       addressLine: { type: String },
       city: { type: String },
       pinCode: { type: String },
@@ -16,8 +17,9 @@ const usersSchema = new mongoose.Schema({
       MobileNumber: { type: Number },
     },
   ],
+  profilePhoto:{type:String},
 });
 
-const Users = mongoose.model("Users", usersSchema);
+const Users = mongoose.model("Users", usersSchema); 
 
 module.exports = Users;

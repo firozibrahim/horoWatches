@@ -23,8 +23,8 @@ router.get('/edit-category/:id',adminAuth.verifyAdmin,adminController.editCatago
 router.post('/DoneEdit-category/:id',adminAuth.verifyAdmin,adminController.afterEditCatagory)
 router.get('/delete-category/:id',adminAuth.verifyAdmin,adminController.deleteCatagory)
 router.post("/addproduct", upload.array('productMainImage',4),productController.addProduct);
-router.get('/edit-product/:id',productController.toEditProduct)
-router.get('/delete-product/:id',productController.deleteProduct)
+router.get('/edit-product/:id',adminAuth.verifyAdmin,productController.toEditProduct)
+router.get('/delete-product/:id',adminAuth.verifyAdmin,productController.deleteProduct)
 const uploadField=[
     {name:"productMainImage0",maxCount:1},
     {name:"productMainImage1",maxCount:1},
@@ -52,7 +52,9 @@ router.post("/search", adminAuth.verifyAdmin,productController.searchProduct)
 // admin.get('/catogory',adminAuth.verifyAdmin,adminController.categoryData)
 
 
-
+router.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
+router.put('/updateStatus/:orderId',adminAuth.verifyAdmin,adminController.orderStatus)
+router.get('/orderView/:id',adminAuth.verifyAdmin,adminController.orderview)
 
 
 

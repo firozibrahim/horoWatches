@@ -1,6 +1,8 @@
 const users = require("../model/usermodel");
 const Category = require("../model/category");
 const productUpload = require("../model/productModel");
+const orders = require("../model/orderModel")
+
 
 const toEditcategory = (req, res) => {
   res.redirect("./admin/edit-category");
@@ -180,6 +182,78 @@ const afterEditCatagory = async (req, res) => {
       .json({ success: false, err: "Failed to update the category name." });
   }
 };
+const toOrders = async (req, res) => {
+  try{
+    var i = 0
+    const page = parseInt(req.query.page) || 1;
+    const count = await orders.find().count()
+    const pageSize = 10;
+    const totaldata = Math.ceil(count / pageSize);
+    const skip = (page - 1) * pageSize;
+    const data = await orders.find().sort({ OrderDate: -1 }).skip(skip).limit(pageSize)
+    
+    res.render('./admin/orders', {
+        title: 'Orders', orderData: data,
+        Count: totaldata,
+        page: page,
+        i
+    })
+
+  }catch(err){
+    console.log(err);
+  }
+}
+const orderStatus = async (req, res) => {
+  try {
+      const orderId = req.params.orderId;
+      //   console.log('mmmmmmmmm',orderId);
+      const newStatus = req.body.status;
+      //   console.log('>>>>>>>>>>>>>',newStatus);  
+      const order = await orders.findByIdAndUpdate(orderId, { Status: newStatus });
+
+      // console.log('...............',order);
+      if (order) {
+          res.json({ success: true });
+      } else {
+          res.json({ success: false });
+      }
+  } catch (error) {
+      console.log("Updating status error");
+      res.render('admin/404')
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+}
+const orderview = async (req, res) => {
+  try {
+      const orderId = req.params.id;
+      // if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      //     // Handle invalid ObjectId here (e.g., return an error response)
+      //     return res.status(400).send('Invalid ObjectId');
+      // }
+      console.log(orderId);
+      const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId');
+      console.log(">>>>>>>>>>>>>", orderData);
+      // const addressId = new mongoose.Types.ObjectId(orderData.Address);
+      // console.log("@@@@@@@@@@",orderData.UserID);
+      // const userData = await users.findOne({ _id: orderData.UserID });
+
+      // if (!userData) {
+      //     console.error('User not found');
+      //     return res.render('admin/404');
+      // }
+      // console.log("^^^^^^",userData);
+      // const Address = userData.address.find((address) => address._id.equals(addressId));
+      // console.log("************",Address);
+
+      res.render('admin/OrderDetialsView', { orderData,title:"orderview" })
+
+  } catch (error) {
+      console.error("order view getting some errors ", error)
+      res.render('admin/404')
+  }
+
+}
+
 
 module.exports = {
   toProduct,
@@ -196,4 +270,8 @@ module.exports = {
   toEditcategory,
   toDashBoard,
   toProduct,
+  toOrders,
+  orderStatus,
+  orderview,
+  
 };

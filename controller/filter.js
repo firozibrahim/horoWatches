@@ -2,9 +2,14 @@ const productData = require("../model/productModel")
 
 const filter = async (req, res) => {
     try {
-     const brand=req.params.brand
-     const data= await productData.find({BrandName:brand}).exec();
-     res.json(data);
+     const brands=req.query.brand ?req.query.brand.split(","):[];
+     let filterQuery = {};
+    if (brands.length > 0) {
+      filterQuery.BrandName = { $in: brands };
+    }
+    //  const categories = req.query.category ? req.query.category.split(",") : [];
+     const data= await productData.find(filterQuery).exec();
+     res.json({data});
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

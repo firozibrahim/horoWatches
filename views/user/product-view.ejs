@@ -8,158 +8,188 @@
     <base href="/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="/user/css/home.css">
-        <link rel="stylesheet" href="/user/css/unAuthorised.css">
-        <style media="screen">
-            figure.zoom {
-                background-position: 50% 50%;
-                position: relative;
-                /* margin: 150px auto; */
-                border: 5px solid white;
-                box-shadow: -1px 5px 15px black;
-                height: 400px;
-                width: 520px;
-                overflow: hidden;
-                cursor: zoom-in;
-            }
+    <link rel="stylesheet" href="/user/css/home.css">
+    <link rel="stylesheet" href="/user/css/unAuthorised.css">
+    <style media="screen">
+        figure.zoom {
+            background-position: 50% 50%;
+            position: relative;
+            /* margin: 150px auto; */
+            border: 5px solid white;
+            box-shadow: -1px 5px 15px black;
+            height: 400px;
+            width: 520px;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
 
-            figure.zoom img:hover {
-                opacity: 0;
-            }
+        figure.zoom img:hover {
+            opacity: 0;
+        }
 
-            figure.zoom img {
-                transition: opacity 0.5s;
-                display: block;
-                width: 100%;
-                
-            }
-            .small-images{
-                max-width: 120px;
-            }
+        figure.zoom img {
+            transition: opacity 0.5s;
+            display: block;
+            width: 100%;
+
+        }
+
+        .small-images {
+            max-width: 120px;
+        }
     </style>
 </head>
 
 <body>
 
     <%-include("../partials/navbar.ejs")%>
-    <main class="container mt-5">
-        <div class="row">
-            <!-- Main Big Image Column -->
-            <div class="col-md-6 pt-5" id="img-show">
-                <figure class="zoom" onmousemove="zoom(event)"id="main-bg"
-                style="background-image: url('/product-image/<%=data.images[0]%>');background-size:200%;">
-                <img src="/product-image/<%=data.images[0]%>" alt="product image" id="main-img">
-            </a>
-        </figure>
-    </div>
-    <script type="text/javascript">
-        function zoom(e) {
-            console.log("uigyutfy")
-            var zoomer = e.currentTarget;
-            e.offsetX ? offsetX = e.offsetX : offsetX = e.touches[0].pageX
-                e.offsetY ? offsetY = e.offsetY : offsetX = e.touches[0].pageX
-                x = offsetX / zoomer.offsetWidth * 100
-                y = offsetY / zoomer.offsetHeight * 100
-                zoomer.style.backgroundPosition = x + '% ' + y + '%';
-            }
-            </script>
-            <!-- <img src="/product-image/<%=data.images[0]%>" alt="Laptop" class="img-fluid"> -->
-
-            <!-- Product Details Column -->
-            <div class="col-md-6 col-sm-12 mt-4">
-                <h2>
-                    <%=data.ProductName%>
-                </h2>
-                <p>Specifications:</p>
-                <ul>
-                    <li>
-                        <%=data.Specification1%>
-                    </li>
-                    <li>
-                        <%=data.Specification2%>
-                    </li>
-                    <li>
-                        <%=data.Specification3%>
-                    </li>
-                    <li>
-                        <%=data.Specification4%>
-                    </li>
-                </ul>
-                <p class="font-weight-bold">Description:</p>
-                <p>
-                    <%=data.Description%>
-                </p>
-                <div class="price">
-                    <span class="text-muted">Original price: <del>₹<%=data.Price%></del></span>
-                    <h4 class="text-success">Price: ₹<%=data.DiscountAmount%>
-                    </h4>
+        <main class="container mt-5">
+            <div class="row">
+                <!-- Main Big Image Column -->
+                <div class="col-md-6 pt-5" id="img-show">
+                    <figure class="zoom" onmousemove="zoom(event)" id="main-bg"
+                        style="background-image: url('/product-image/<%=data.images[0]%>');background-size:200%;">
+                        <img src="/product-image/<%=data.images[0]%>" alt="product image" id="main-img">
+                        </a>
+                    </figure>
                 </div>
-                <button class="btn" style="background-color: #4196f7;" id="addToCartButton"
-                    data-item-id="<%= data._id %>" onclick="addEventListener">Add to Cart</button>
-                <button class="btn" style="background-color: #078505;" id="addToWishlist">Add to Wishlist</button>
+                <script type="text/javascript">
+                    function zoom(e) {
+                        var zoomer = e.currentTarget;
+                        e.offsetX ? offsetX = e.offsetX : offsetX = e.touches[0].pageX
+                        e.offsetY ? offsetY = e.offsetY : offsetX = e.touches[0].pageX
+                        x = offsetX / zoomer.offsetWidth * 100
+                        y = offsetY / zoomer.offsetHeight * 100
+                        zoomer.style.backgroundPosition = x + '% ' + y + '%';
+                    }
+                </script>
+                <!-- <img src="/product-image/<%=data.images[0]%>" alt="Laptop" class="img-fluid"> -->
+
+                <!-- Product Details Column -->
+                <div class="col-md-6 col-sm-12 mt-4">
+                    <h2>
+                        <%=data.ProductName%>
+                    </h2>
+                    <p>Specifications:</p>
+                    <ul>
+                        <li>
+                            <%=data.Specification1%>
+                        </li>
+                        <li>
+                            <%=data.Specification2%>
+                        </li>
+                        <li>
+                            <%=data.Specification3%>
+                        </li>
+                        <li>
+                            <%=data.Specification4%>
+                        </li>
+                    </ul>
+                    <p class="font-weight-bold">Description:</p>
+                    <p>
+                        <%=data.Description%>
+                    </p>
+                    <div class="price">
+                        <span class="text-muted">Original price: <del>₹<%=data.Price%></del></span>
+                        <h4 class="text-success">Price: ₹<%=data.DiscountAmount%>
+                        </h4>
+                    </div>
+                    <button class="btn" style="background-color: rgb(205, 247, 65);" id="addToCartButton"
+                        data-item-id="<%=data._id%>">Add to Cart</button>
+                    <button class="btn" style="background-color: #078505;" id="addToWishlist">Add to Wishlist</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Small Images in a Separate Div -->
-        <div class="mt-3">
-            <div class="col-md-12" style="width:500px;">
-                <div class="small-images d-flex">
-                    <img id="smallImage0" src="/product-image/<%=data.images[0]%>" alt="Small Image 1"
-                        class="img-thumbnail small-image mx-2">
-                    <img id="smallImage1" src="/product-image/<%=data.images[1]%>" alt="Small Image 1"
-                        class="img-thumbnail small-image mx-2">
-                    <img id="smallImage2" src="/product-image/<%=data.images[2]%>" alt="Small Image 2"
-                        class="img-thumbnail small-image mx-2">
-                    <img id="smallImage3" src="/product-image/<%=data.images[3]%>" alt="Small Image 3"
-                        class="img-thumbnail small-image mx-2">
+            <!-- Small Images in a Separate Div -->
+            <div class="mt-3">
+                <div class="col-md-12" style="width:500px;">
+                    <div class="small-images d-flex">
+                        <img id="smallImage0" src="/product-image/<%=data.images[0]%>" alt="Small Image 1"
+                            class="img-thumbnail small-image mx-2">
+                        <img id="smallImage1" src="/product-image/<%=data.images[1]%>" alt="Small Image 1"
+                            class="img-thumbnail small-image mx-2">
+                        <img id="smallImage2" src="/product-image/<%=data.images[2]%>" alt="Small Image 2"
+                            class="img-thumbnail small-image mx-2">
+                        <img id="smallImage3" src="/product-image/<%=data.images[3]%>" alt="Small Image 3"
+                            class="img-thumbnail small-image mx-2">
+                    </div>
+
                 </div>
+            </div>
+        </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <!-- <script src="/script/js-ImageZoom.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            var el = document.getElementById("wrapper");
+            var toggleButton = document.getElementById("menu-toggle");
+
+            toggleButton.onclick = function () {
+                el.classList.toggle("toggled");
+            };
+        </script>
+        <script>
+            const cartButton = document.getElementById("addToCartButton")
+            cartButton.addEventListener("click", function () {
                 
-            </div>
-        </div>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                const itemId = this.dataset.itemId;
+                console.log(itemId, "item id");
+                const body = {
+                    itemId: itemId,
+                }
+                
+                fetch("/user/addToCart", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body),
+                })
+                    .then(response => response.json())
+                    .then(response => {
+                      
+                    }).then(response=>{
+                        swal("item added to cart", {
+                                icon: "success",
+                            });
+                    })
+                    .catch(error => {
+                        console.log("error found",error);
+                    });
 
-    <script src="/script/js-ImageZoom.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        var el = document.getElementById("wrapper");
-        var toggleButton = document.getElementById("menu-toggle");
+            })
+            // JavaScript to change the main image when a small image is clicked
+            document.addEventListener("DOMContentLoaded", function () {
+                const smallImage0 = document.getElementById("smallImage0");
+                const smallImage1 = document.getElementById("smallImage1");
+                const smallImage2 = document.getElementById("smallImage2");
+                const smallImage3 = document.getElementById("smallImage3");
+                const mainbg = document.getElementById("main-bg");
+                const mainImage = document.getElementById("main-bg");
 
-        toggleButton.onclick = function () {
-            el.classList.toggle("toggled");
-        };
-    </script>
-    <script>
-        // JavaScript to change the main image when a small image is clicked
-document.addEventListener("DOMContentLoaded", function () {
-    const smallImage0 = document.getElementById("smallImage0");
-    const smallImage1 = document.getElementById("smallImage1");
-    const smallImage2 = document.getElementById("smallImage2");
-    const smallImage3 = document.getElementById("smallImage3");
-    const mainbg = document.getElementById("main-bg");
-    const mainImage = document.getElementById("main-bg");
+                smallImage0.addEventListener("click", function () {
+                    mainbg.style.backgroundImage = `url('/product-image/<%=data.images[0]%>')`;
+                    mainImage.innerHTML = `<img src="/product-image/<%=data.images[0]%>" alt="product image">`;
+                });
+                smallImage1.addEventListener("click", function () {
+                    mainbg.style.backgroundImage = `url('/product-image/<%=data.images[1]%>')`;
+                    mainImage.innerHTML = `<img src="/product-image/<%=data.images[1]%>" alt="product image">`;
+                });
 
-    smallImage0.addEventListener("click", function () {
-        mainbg.style.backgroundImage = `url('/product-image/<%=data.images[0]%>')`;
-        mainImage.innerHTML = `<img src="/product-image/<%=data.images[0]%>" alt="product image">`;
-    });
-    smallImage1.addEventListener("click", function () {
-        mainbg.style.backgroundImage = `url('/product-image/<%=data.images[1]%>')`;
-        mainImage.innerHTML = `<img src="/product-image/<%=data.images[1]%>" alt="product image">`;
-    });
+                smallImage2.addEventListener("click", function () {
+                    mainImage.style.backgroundImage = `url('/product-image/<%=data.images[2]%>')`;
+                    mainImage.innerHTML = `<img src="/product-image/<%=data.images[2]%>" alt="product image">`;
+                });
 
-    smallImage2.addEventListener("click", function () {
-        mainImage.style.backgroundImage = `url('/product-image/<%=data.images[2]%>')`;
-        mainImage.innerHTML = `<img src="/product-image/<%=data.images[2]%>" alt="product image">`;
-    });
+                smallImage3.addEventListener("click", function () {
+                    mainImage.style.backgroundImage = `url('/product-image/<%=data.images[3]%>')`;
+                    mainImage.innerHTML = `<img src="/product-image/<%=data.images[3]%>" alt="product image">`;
+                });
+            });
 
-    smallImage3.addEventListener("click", function () {
-        mainImage.style.backgroundImage = `url('/product-image/<%=data.images[3]%>')`;
-        mainImage.innerHTML = `<img src="/product-image/<%=data.images[3]%>" alt="product image">`;
-    });
-});
-
-    </script>
+        </script>
 </body>
 
 </html>

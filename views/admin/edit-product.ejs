@@ -79,12 +79,10 @@
                         <div style="height: 650px;">
                             <div class="column-xs-12 column-mD-5 d-flex m-3">
                                 <div class="product-gallery d-flex">
-                                    <label class="product-image "
-                                        style="width: 600px; height: 600px; padding-bottom: 5px; display: flex; align-items: center; justify-content: center; overflow: hidden;;">
-                                        <input type="file" id="productImage1" accept="image/*" class="input-hidden"
-                                            onchange="previewImageedit(this, 'imagePreview1')" name="productMainImage0">
-                                        <img id="imagePreview1" class="image-preview" style="width: 100%;height:auto;"
-                                            src="/product-image/<%-data.images[0]%>">
+                                    <label class="product-image" style="width: 600px; height: 600px; position: relative; overflow: hidden;">
+                                        <input type="file" id="productImage1" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview1')" name="productMainImage0" >
+                                        <img id="imagePreview1" class="image-preview" style="width: 100%; height: auto;" src="/product-image/<%-data.images[0]%>">
+                                        <button class="btn" onclick="deleteImage('productImage1', '<%-data.images[0]%>', 'imagePreview1')"><i class="fa fa-trash fa-3x" aria-hidden="true"></i></button>
                                     </label>
                                     <div class="d-block flex-row" style="height:600px; width:200px">
                                         <label class="product-image"
@@ -92,19 +90,24 @@
                                             <input type="file" id="productImage2" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview2')" name="productMainImage1">
                                             <img id="imagePreview2" class="image-preview"
                                             src="/product-image/<%-data.images[1]%>">
-                                        </label>
+                                        <button class="btn" onclick="deleteImage('productImage2', '<%-data.images[1]%>', 'imagePreview2')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+                                    </label>
                                         <label class="product-image"
                                         style="width: 200px; height: 200px; padding-bottom: 5px; display: flex;">
                                         
-                                        <input type="file" id="productImage3" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview3')" name="productMainImage2">
+                                        <input type="file" id="productImage3" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview3')" name="productMainImage2" >
                                         <img id="imagePreview3" class="image-preview"
                                         src="/product-image/<%-data.images[2]%>">
+                                        <button class="btn" onclick="deleteImage('productImage3', '<%-data.images[2]%>', 'imagePreview3')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+
                                     </label>
                                     <label class="product-image"
                                     style="width: 200px; height:200px; padding-bottom: 5px; display: flex;">
                                     <input type="file" id="productImage4" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview4')" name="productMainImage3">
                                             <img id="imagePreview4" class="image-preview"
-                                                src="/product-image/<%-data.images[3]%>">
+                                                src="/product-image/<%-data.images[3]%>" >
+                                                <button class="btn" onclick="deleteImage('productImage4','imagePreview4')" type="button"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+
                                         </label>
                                     </div>
                                 </div>
@@ -137,13 +140,13 @@
 
 
                                 <label for="productSpecification2">Product Specification:</label>
-                                <textarea class="form-control bg-light" name="Specification2" id="productSpecification"
+                                <textarea class="form-control bg-light" name="Specification2" id="productSpecification2"
                                     placeholder="Enter product Specification"
                                     required><%=data.Specification2%></textarea>
                                     <div class="error" id="specificationError2"></div>
 
                                 <label for="productSpecification3">Product Specification:</label>
-                                <textarea class="form-control bg-light" name="Specification3" id="productSpecification"
+                                <textarea class="form-control bg-light" name="Specification3" id="productSpecification3"
                                     placeholder="Enter product Specification"
                                     required><%=data.Specification3%></textarea>
                                     <div class="error" id="specificationError3"></div>
@@ -263,6 +266,7 @@
     const quantityError = document.getElementById('quantityError');
     const discError = document.getElementById('discError');
         form.addEventListener("submit", function (event) {
+            // event.preventDefault()
             console.log("clicked");
           nameError.innerHTML = "";
           descriptionError.innerHTML = "";
@@ -274,9 +278,13 @@
           discError.innerHTML= "";
           //validate emailInput
           const nameValue = productInput.value.trim()
+        //   console.log(nameValue);
           const descriptionValue = productDescription.value.trim();
+        //   console.log(descriptionValue);
           const speciValue1 = productSpecificationinput1.value.trim()
+        //   console.log(speciValue1);
           const speciValue2 = productSpecificationinput2.value.trim()
+          
           const speciValue3 = productSpecificationinput3.value.trim()
           if (nameValue === "") {
             event.preventDefault(); 
@@ -309,6 +317,7 @@
             
           }
           if (isNaN(parseFloat(basepriceInput.value)) || parseFloat(basepriceInput.value) <= 0) {
+            console.log(parseFloat(basepriceInput.value),".....");
             event.preventDefault()
           priceerror.innerHTML = "Price must be a positive number.";
           return
@@ -335,6 +344,14 @@
         })
       })
 
+    </script>
+    <script>
+        function deleteImage(id,imageId){
+            let input=document.getElementById(id)
+            let image=document.getElementById(imageId)
+            input.value=''
+            image.src=''
+        }
     </script>
 
     <!-------validation------>

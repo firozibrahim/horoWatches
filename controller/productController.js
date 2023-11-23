@@ -1,4 +1,3 @@
-
 const productUpload = require("../model/productModel");
 const Category = require("../model/category");
 
@@ -139,22 +138,44 @@ const deleteProduct = async (req, res) => {
   );
   res.redirect("/admin/toproducts");
 };
-const toProductList=async (req,res)=>{
-    try{
-    let data= await productUpload.find()
-    res.render('user/product-list',{title:"Products", data})
-    }catch{
-        console.error(error);
-        res.status(500).send("Internet Server Error")
-    }
+const toProductList = async (req, res) => {
+  try {
+    var perPage = 6;
+    var page = req.params.page || 1;
+
+    productUpload
+    .find({})
+    .skip((page - 1) * perPage)
+    .limit(perPage)
+    .exec()
+    .then((products) => {
+      return productUpload
+        .countDocuments()
+        .exec()
+        .then((count) => {
+          console.log("count",count);
+          const totalPages = Math.ceil(count / perPage);
+          console.log( "Total pages",totalPages);
+          res.render("user/product-list", {
+            title: products,
+            data: products,
+            current: page,
+            pages: totalPages, // Pass totalPages to the template
+          });
+        });
+    });
+  } catch {
+    console.error(error);
+    res.status(500).send("Internet Server Error");
   }
-  const productView=async(req,res)=>{
-    console.log("dxfgg");
-    const id = req.params.id;
-    const data= await  productUpload.findOne({_id:id})
-    console.log("to product view");
-    res.render("user/product-view",{title:data.ProductName,data})
-  }
+};
+const productView = async (req, res) => {
+  // console.log("dxfgg");
+  const id = req.params.id;
+  const data = await productUpload.findOne({ _id: id });
+  console.log("to product view");
+  res.render("user/product-view", { title: data.ProductName, data });
+};
 
 module.exports = {
   deleteProduct,
