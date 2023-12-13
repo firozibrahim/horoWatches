@@ -186,14 +186,14 @@
             </div>
 
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="paymentMethod" id="online" value="online" disabled />
-              <label class="form-check-label" for="online">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="online" value="online"/>
+              <label class="form-check-label text-black" for="online">
                 Online Payment
               </label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet" disabled />
-              <label class="form-check-label" data-walletAmount="<%=userData.wallet%>" id="<%=TotalPrice%>"
+              <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet"/>
+              <label class="form-check-label text-black" data-walletAmount="<%=userData.wallet%>" id="<%=TotalPrice%>"
                 for="wallet">
                 Pay Using Wallet
               </label>
@@ -240,7 +240,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
       function showAlert(message, type) {
         const alertBody = document.getElementById('customAlertBody');
@@ -298,6 +298,7 @@
           });
           return;
         }
+        const selectedPaymentMethod =$("input[name='paymentMethod']:checked").val()
         try {
       const response = await fetch('/user/placeOrder', {
         method: 'POST',
@@ -306,6 +307,7 @@
         },
         body: JSON.stringify({
           selectedAddress: selectedAddressValue,
+          selectedPaymentMethod:selectedPaymentMethod,
 
         }),
       });
@@ -314,15 +316,74 @@
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const result = await response.json();
-      if (result.success) {
+      if (result.cod) {
         window.location = '/user/ordersuccess';
+      }
+      else if(result.online){
+        console.log("........online",result);
+        razorpay(result)
       }
     } catch (error) {
       console.error('Error:', error);
     }
+
   });
 
+  function razorpay(order){
+    console.log(order);
+    var options = {
+    "key": "rzp_test_wvJjYZuba0ZWpx", // Enter the Key ID generated from the Dashboard
+    "amount": order.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "horo watches",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.createdOrder.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        console.log(response.razorpay_payment_id);
+        console.log(response.razorpay_order_id);
+        console.log(response.razorpay_signature)
+        verifyPayment(response,order);
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#BCC33E"
+    }
+};
+
+var rzp1 = new Razorpay(options);
+rzp1.open();
+rzp1.on('payment.failed', function (response){
+    alert(response.error.code);
+    alert(response.error.description);
+    alert(response.error.source);
+    alert(response.error.step);
+    alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
+})
+  }
+  function verifyPayment(payment,orderDetails){
+    fetch("/user/verifyPayment",{
+      method:"POST",
+      body:JSON.stringify({payment,orderDetails}),
+      headers: {
+          'Content-Type': 'application/json',
+        },
+
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.success){
+        window.location ='/user/ordersuccess';
+      }
+    })
+  }
     </script>
+    <script src="/user/script/navbar.js"></script>
+
 
 </body>
 

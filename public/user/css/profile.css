@@ -1,16 +1,20 @@
+body{
+    margin-top: 70px;
+    width: auto;
+}
 .form-control:focus {
     box-shadow: none;
     border-color: #BA68C8
 }
 
 .profile-button {
-    background:#B59326;
+    background:#1C2541;
     box-shadow: none;
     border: none
 }
 
 .profile-button:hover {
-    background: #682773
+    background: #3A506B
 }
 
 .profile-button:focus {
@@ -24,7 +28,7 @@
 }
 
 .back:hover {
-    color: #682773;
+    color: #7f6185;
     cursor: pointer
 }
 
@@ -33,18 +37,19 @@
 }
 
 .add-experience:hover {
-    background: #BA68C8;
+    background: #0e0e4a;
     color: #fff;
     cursor: pointer;
-    border: solid 1px #BA68C8
+    border: solid 1px #000000
 }
 
-.list {
-    /* height: 50vh; */
+.profie-img {
+    filter: drop-shadow(0px 0px 20px #252323);
 }
 
 .dp {
-    background-color: #B59326;
+    background-color: #1C2541;
+    color: #fff;
 }
 
 .list ul li a {
@@ -60,7 +65,19 @@
 
 }
 .selected{
-    background-color: #b59326;
+    /* background-color: #ffffff; */
+}
+
+@media (max-width: 768px) {
+    .sidebar{
+        display: none;
+    }
+    
+}
+@media (min-width: 768px) {
+    .offset{
+       margin-left: 25%;
+    }
 }
 
 

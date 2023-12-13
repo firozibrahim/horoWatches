@@ -8,6 +8,7 @@
 }
 
 .image-container {
+    /* display: none; */
     position: relative;
 }
 .li a{
@@ -59,3 +60,54 @@
     border-radius: 104px;
     background: linear-gradient(347deg, #646464 -37.61%, rgba(98, 98, 98, 0.34) 227.5%);
 }
+
+/* Your existing CSS code */
+
+@media (max-width: 768px) {
+    /* Adjustments for smaller screens */
+    #myNav {
+      display: none;
+    }
+  
+    .links.show {
+      /* display: block; */
+    }
+    .navbar-brand {
+      margin-right: auto;
+    }
+  
+    .navbar-toggler {
+      display: block;
+    }
+  
+    .collapse.navbar-collapse {
+      display: none;
+      flex-basis: 100%;
+    }
+    .form{
+      display: none;
+    }
+  
+    .navbar-nav {
+      flex-direction: column;
+      text-align: center;
+      margin-top: 10px;
+    }
+  
+    .navbar-nav .nav-item {
+      margin-bottom: 10px;
+    }
+  
+    .collapse.navbar-collapse.show {
+      display: flex;
+    }
+  
+    .form {
+      margin-top: 10px;
+    }
+  
+    .right {
+      margin-top: 10px;
+    }
+  }
+  

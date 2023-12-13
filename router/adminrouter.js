@@ -3,6 +3,7 @@ const router=express.Router()
 const users=require('../model/usermodel')
 const adminController=require('../controller/adminController')
 const productController=require('../controller/productController')
+const dashController=require('../controller/dashController')
 const multer=require('multer')
 const upload = require("../middlewares/multer");
 const Products = require("../model/productModel");
@@ -55,6 +56,12 @@ router.post("/search", adminAuth.verifyAdmin,productController.searchProduct)
 router.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
 router.put('/updateStatus/:orderId',adminAuth.verifyAdmin,adminController.orderStatus)
 router.get('/orderView/:id',adminAuth.verifyAdmin,adminController.orderview)
+
+router.get("/count-orders-by-day",adminAuth.verifyAdmin,dashController.salesReport)
+router.get("/count-orders-by-month",adminAuth.verifyAdmin,dashController.salesReport)
+router.get("/count-orders-by-year",adminAuth.verifyAdmin,dashController.salesReport)
+router.get('/latestOrders',adminAuth.verifyAdmin,dashController.getOrdersAndSellers)
+router.post('/download-sales-report',adminAuth.verifyAdmin,dashController.generateSalesReport)
 
 
 

@@ -1,4 +1,3 @@
-const users = require("../model/usermodel");
 
 const verifyUser =async (req,res,next)=>{
 

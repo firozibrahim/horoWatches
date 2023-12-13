@@ -82,7 +82,7 @@
                                     <label class="product-image" style="width: 600px; height: 600px; position: relative; overflow: hidden;">
                                         <input type="file" id="productImage1" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview1')" name="productMainImage0" >
                                         <img id="imagePreview1" class="image-preview" style="width: 100%; height: auto;" src="/product-image/<%-data.images[0]%>">
-                                        <button class="btn" onclick="deleteImage('productImage1', '<%-data.images[0]%>', 'imagePreview1')"><i class="fa fa-trash fa-3x" aria-hidden="true"></i></button>
+                                        <button class="btn" type="button" onclick="deleteImage('productImage1m.,', 'imagePreview1')"><i class="fa fa-trash fa-3x" aria-hidden="true"></i></button>
                                     </label>
                                     <div class="d-block flex-row" style="height:600px; width:200px">
                                         <label class="product-image"
@@ -90,7 +90,7 @@
                                             <input type="file" id="productImage2" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview2')" name="productMainImage1">
                                             <img id="imagePreview2" class="image-preview"
                                             src="/product-image/<%-data.images[1]%>">
-                                        <button class="btn" onclick="deleteImage('productImage2', '<%-data.images[1]%>', 'imagePreview2')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+                                        <button class="btn" type="button" onclick="deleteImage('productImage2','imagePreview2')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
                                     </label>
                                         <label class="product-image"
                                         style="width: 200px; height: 200px; padding-bottom: 5px; display: flex;">
@@ -98,7 +98,7 @@
                                         <input type="file" id="productImage3" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview3')" name="productMainImage2" >
                                         <img id="imagePreview3" class="image-preview"
                                         src="/product-image/<%-data.images[2]%>">
-                                        <button class="btn" onclick="deleteImage('productImage3', '<%-data.images[2]%>', 'imagePreview3')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+                                        <button class="btn" type="button" onclick="deleteImage('productImage3', 'imagePreview3')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
 
                                     </label>
                                     <label class="product-image"
@@ -106,7 +106,7 @@
                                     <input type="file" id="productImage4" accept="image/*" class="input-hidden" onchange="previewImageedit(this, 'imagePreview4')" name="productMainImage3">
                                             <img id="imagePreview4" class="image-preview"
                                                 src="/product-image/<%-data.images[3]%>" >
-                                                <button class="btn" onclick="deleteImage('productImage4','imagePreview4')" type="button"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
+                                                <button class="btn" type="button" onclick="deleteImage('productImage4','imagePreview4')" type="button"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>
 
                                         </label>
                                     </div>
@@ -347,6 +347,7 @@
     </script>
     <script>
         function deleteImage(id,imageId){
+            console.log(id,imageId);
             let input=document.getElementById(id)
             let image=document.getElementById(imageId)
             input.value=''

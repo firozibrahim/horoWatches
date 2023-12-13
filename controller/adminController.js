@@ -2,6 +2,7 @@ const users = require("../model/usermodel");
 const Category = require("../model/category");
 const productUpload = require("../model/productModel");
 const orders = require("../model/orderModel")
+const Return = require("../model/return")
 
 
 const toEditcategory = (req, res) => {
@@ -191,12 +192,15 @@ const toOrders = async (req, res) => {
     const totaldata = Math.ceil(count / pageSize);
     const skip = (page - 1) * pageSize;
     const data = await orders.find().sort({ OrderDate: -1 }).skip(skip).limit(pageSize)
+    const returns = await Return.find().sort({returnDate:-1})
+    console.log(returns);
     
     res.render('./admin/orders', {
         title: 'Orders', orderData: data,
         Count: totaldata,
         page: page,
-        i
+        i,
+        returns,
     })
 
   }catch(err){

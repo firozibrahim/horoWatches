@@ -14,8 +14,10 @@ h2::after {
 	bottom: -20px;
 }
 .carousel {
-	margin: 50px auto;
-	padding: 0 70px;
+	/* margin: 50px auto; */
+	/* padding: 0 70px; */
+	display: flex;
+	justify-content: space-around;
 }
 .carousel .item {
 	color: #747d89;
@@ -23,8 +25,9 @@ h2::after {
 	overflow: hidden;
 }
 .carousel .thumb-wrapper {
+	margin: 10px;
 	padding: 10px 10px;
-	background: #fff;
+	background: #ffffff;
 	border-radius: 10px;
 	text-align: center;
 	position: relative;
@@ -32,7 +35,7 @@ h2::after {
 }
 .carousel .item .img-box {
 	height: 200px;
-    border-radius: 10px;
+    border-radius: 0px;
 	margin-bottom: 10px;
     background-size: cover;
 	width: 100%;
@@ -42,9 +45,8 @@ h2::after {
 	width: 100%;
     overflow: hidden;
 	height: 100%;
-	display: inline-block;
-	position: absolute;
-    
+	/* display: inline-block; */
+	position: absolute;   
 	bottom: 0;
 	margin: 0 auto;
 	left: 0;
@@ -52,7 +54,7 @@ h2::after {
 }
 .carousel .item h5 {
     color: #000;
-    height: 18px;
+    height: 25px;
 	font-size: 18px;
     overflow: hidden;
 }
@@ -62,7 +64,7 @@ h2::after {
     overflow: hidden;
 }
 .carousel .item h4, .carousel .item p, .carousel .item {
-	margin-bottom: 0px;
+	margin-bottom: 10px;
 }
 .carousel .thumb-content .btn {
 	color: #7ac400;

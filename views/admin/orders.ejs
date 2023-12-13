@@ -18,6 +18,9 @@
 
     <!-- /#page-content-wrapper -->
     <div class="container">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#returnModal">
+        Returns
+      </button>
 <h2>Orders</h2>
   <!-- <a href="/admin/ReturnPage"><button class="btn btn-primary me-md-2" type="button">Return Products</button></a> -->
   <br>
@@ -41,7 +44,7 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td><%= x._id %></td>
-          <td><%= x.UserID %></td>
+       
            <td>
             <% const orderDate = new Date(x.OrderDate); %>
             <%= orderDate.toLocaleString('default', { month: 'short' }) %>
@@ -79,6 +82,64 @@
     <% } %>
   </tbody>
 </table>
+<!-- Button to trigger the modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg"> <!-- Use modal-lg for a larger modal if needed -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="returnModalLabel">Return Orders</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Your table goes here -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">No</th>
+              <th scope="col">Order Id</th>
+              <th scope="col">User Id</th>
+              <th scope="col">Total Price</th>
+              <th scope="col">Status</th>
+              <th scope="col">View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (returns.length > 0) { %>
+              <% returns.forEach((x, index) => { %>
+                <tr>
+                  <th scope="row"><%= index + 1 %></th>
+                  <td><%= x.userId %></td>
+                  <td><%= x.product %></td>
+                  <td><%= x.price %></td>
+                  <td>
+                    <% if (x.Status=="NotVerified"){%>
+                      <a href=""><button type="button" class="btn btn-warning btn-sm" onclick="updateOrderStatus('<%= x._id %>', 'Verified')">Verify</button></a>
+                    <% } else {%>
+                      <button type="button" class="btn btn-danger btn-sm" disabled>verified</button>
+                    <% } %>
+                  </td>
+                  <td><a href="/admin/returnDetails/<%=x._id%>"><button type="button" class="btn btn-light">View</button></a></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6">
+                  <h4>No Data Available</h4>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
   <ul class="pagination">
       <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">

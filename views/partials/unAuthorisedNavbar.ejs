@@ -1,20 +1,34 @@
-<nav class="navb navbar navbar-expand-lg">
+<nav class="navb navbar navbar-expand-lg d-flex justify-content-between fixed-top" >
 
-    <a class="navbar-brand" href="/home"><img src="/user/images/logo-white.png" id="logo"></a>
-      <ul class="links list-unstyled">
-        <li class="li"><a href="/#">Home</a></li>
-        <li class="li"><a href="/#">About us</a></li>
-        <li class="li"><a href="/#">Shop</a></li>
-        <li class="li"><a href="/#">Contact Us</a></li>
-        <li class="li"><a href="/tologin">login</a></li>
+  <a class="navbar-brand" href="/home"><img src="/user/images/logo-white.png" id="logo"></a>
+  <div class="links">
+  <ul class=" overlay-content" id="myNav">
+    <a class="close-button" onclick="closeNav()">&times;</a>
+    <a href="/"><li class="li">Home</li></a>
+    <a href="/#"><li class="li">About us</li></a>
+    <a href="/user/toProduct-list"><li class="li">Shop</li></a>
+    <a href="/#"><li class="li">Contact Us</li></a>
+    <a href="/tologin"><li class="li">login</li></a>
+  </ul>
+
+  </div>
+<span class="navbar-span" style="font-size:30px;cursor:pointer;color: #ffffff;" onclick="openNav()">&#9776;</span>
+  <div class="right">
+
+    <ul class="profile-dropdown">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown" role="button"
+   data-bs-toggle="dropdown" aria-expanded="false">
+   <i class="fa-solid fa-user" style="color: #ffffff;"></i>
+</a>
+        <ul class="dropdown-menu" style="left: -130px;" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="/user/account">Profile</a></li>
+          <li><a class="dropdown-item" href="/user/account">Settings</a></li>
+          <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+          <li><a class="dropdown-item" href="/wishlist">wishlist</a></li>
+          <li><a class="dropdown-item" href="/user/cart">cart</a></li>
         </ul>
-      <form class="form my-2 my-lg-0">
-        <input class="form-control searchinput" type="search" placeholder="Search" aria-label="Search">
-        <button class="searchbutton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </form>
-      <div class="right">
-        <a href="/tologin"><i class="fa-sharp fa-solid fa-cart-shopping fa-xl" style="color: #e1e1e1;"></i></a>
-        <a href="/tologin"><i class="fa-solid fa-heart-circle-plus fa-xl" style="color: #e2e2e2;"></i></a>
-      </div>
-
-  </nav>
+      </li>
+    </ul>
+</div>
+</nav>

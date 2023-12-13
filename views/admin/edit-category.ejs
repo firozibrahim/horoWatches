@@ -19,7 +19,7 @@
     <div class="shadow p-5 mt-5 m-lg-5 bg-white rounded w-50 ">
         <form action="/admin/DoneEdit-category/<%=category._id%>" method="POST" id="category-form" onsubmit="editCategory(event,'<%=category._id%>')">
 
-            <div class="form-group" id="category-form">
+            <div class="form-group " id="category-form">
                 <label for="exampleInputEmail1">edit category</label>
                 <input type="text" class="form-control mt-3" name="CategoryName" id="categoryname" value="<%-category.CategoryName%>" place style="height: 40px; width: 80%;" required>
                 <small id="error" class="form-text text-danger"></small>

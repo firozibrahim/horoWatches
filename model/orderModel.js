@@ -27,6 +27,7 @@ const OrdersSchema = new Schema({
   TotalPrice: { type: Number },
   OrderDate: { type: Date },
   PaymentId: { type: Number },
+  orderId:{type:String},
 });
 
 const Orders = mongoose.model('Orders', OrdersSchema);

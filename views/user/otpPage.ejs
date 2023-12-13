@@ -42,7 +42,7 @@
                                     id="validateButton">Validate</button>
                             </div>
                             <div class="content d-flex justify-content-center align-items-center mb-5">
-                                <span id="countdownText">otp will expire in  <span id="countdown">120</span> seconds</span>
+                                <span id="countdownText">request another OTP in <span id="countdown">120</span> seconds</span>
                                 <a href="/user/resend-otp" class="text-decoration-none ms-3" id="resend-otp"></a>
                             </div>
 
@@ -64,7 +64,7 @@
         const countdownText = document.getElementById('countdownText');
         const countdown = document.getElementById('countdown');
         const resend = document.getElementById('resend-otp')
-        let timer = 120; // 2 minutes (2 * 60 seconds)
+        let timer =localStorage.getItem('countdown')|| 120; // 2 minutes (2 * 60 seconds)
 
         function updateCountdown() {
             countdown.textContent = timer;
@@ -82,7 +82,10 @@
         updateCountdown();
 
         // Start the countdown timer
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        const countdownInterval = setInterval(() => {
+        updateCountdown();
+        localStorage.setItem('countdown', timer);
+    }, 1000);
         // Add a click event listener to the "Validate" button5
         validateButton.addEventListener('click', function () {
             // Extract the input values

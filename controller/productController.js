@@ -8,7 +8,7 @@ const toAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   const productDetails = req.body;
-  console.log(productDetails);
+  // console.log(productDetails);
   try {
     const allfiles = req?.files;
     const images = req.files;
@@ -18,7 +18,7 @@ const addProduct = async (req, res) => {
     }
 
     images.forEach((value, index) => {
-      console.log("images" + index, value);
+      // console.log("images" + index, value);
     });
 
     const uploaded = await productUpload.create({
@@ -38,10 +38,10 @@ const addProduct = async (req, res) => {
 
 const toEditProduct = async (req, res) => {
   const id = req.params.id;
-  console.log("to edit product");
+  // console.log("to edit product");
   const category = await Category.find();
   const data = await productUpload.findOne({ _id: id });
-  console.log(data);
+  // console.log(data);
   res.render("admin/edit-product", { title: "edit product", data, category });
 };
 
@@ -49,10 +49,10 @@ const EditProduct = async (req, res) => {
   try {
     // console.log(req.body);
     const productDetails = req.body;
-    console.log("tt" + JSON.stringify(req.body));
-    console.log(productDetails);
+    // console.log("tt" + JSON.stringify(req.body));
+    // console.log(productDetails);
     let id = req.params.id;
-    console.log(id);
+    // console.log(id);
     let allImages_filename = [];
     let noImage;
     const allImages = req.files;
@@ -112,11 +112,11 @@ const EditProduct = async (req, res) => {
 const searchProduct = async (req, res) => {
   var i = 0;
   const getdata = req.body;
-  console.log(getdata);
+  // console.log(getdata);
   let data = await productUpload.find({
     ProductName: { $regex: "^" + getdata.search, $options: "i" },
   });
-  console.log(`Search Data ${data} `);
+  // console.log(`Search Data ${data} `);
   res.render("./admin/products", { title: "Home", data, i });
 };
 
@@ -140,30 +140,19 @@ const deleteProduct = async (req, res) => {
 };
 const toProductList = async (req, res) => {
   try {
-    var perPage = 6;
-    var page = req.params.page || 1;
+    // var perPage = 6;
+    // var page = req.params.page || 1;
 
-    productUpload
-    .find({})
-    .skip((page - 1) * perPage)
-    .limit(perPage)
-    .exec()
-    .then((products) => {
-      return productUpload
-        .countDocuments()
-        .exec()
-        .then((count) => {
-          console.log("count",count);
-          const totalPages = Math.ceil(count / perPage);
-          console.log( "Total pages",totalPages);
+    const products = await productUpload.find({})
+
           res.render("user/product-list", {
-            title: products,
+            title: 'products',
             data: products,
-            current: page,
-            pages: totalPages, // Pass totalPages to the template
+            // current: page,
+            // pages: totalPages, // Pass totalPages to the template
           });
-        });
-    });
+      
+    
   } catch {
     console.error(error);
     res.status(500).send("Internet Server Error");

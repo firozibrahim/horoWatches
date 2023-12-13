@@ -38,10 +38,10 @@ router.get("/user/resend-otp",userAuth.userExist,userController.otpSender)
 // router.get("/user/home",userAuth.verifyUser,userBlock,userController.userLog)
 //logout
 router.get("/user/toProduct-list",userAuth.verifyUser,productController.toProductList)
-router.get("/user/toProduct-list/:page",userAuth.verifyUser,productController.toProductList)
+router.get("/user/products",userAuth.verifyUser,filterController.filter)
 router.get("/user/logout",userAuth.verifyUser,userController.logout)
 router.get("/user/all-products",userAuth.verifyUser,filterController.allproduct)
-router.get("/user/filter-products",userAuth.verifyUser,filterController.filter)
+// router.get("/user/filter-products",userAuth.verifyUser,filterController.filter)
 router.get("/user/toproductView/:id",userAuth.verifyUser,productController.productView)
 
 router.get("/user/cart",userAuth.verifyUser,cartController.toCart)
@@ -64,7 +64,8 @@ router.get('/user/toOrderPage',userAuth.verifyUser,orderController.toOrderPage)
 router.post("/user/cancelOrder/:id",userAuth.verifyUser,orderController.cancelOrder)
 router.post('/Onecancel-order',userAuth.verifyUser, orderController.oneItemcancel)
 router.get("/user/toorderDetails/:id",userAuth.verifyUser,orderController.orderDetails)
-
+router.post('/return-order',userAuth.verifyUser,orderController.returnOrder)
+router.post('/user/verifyPayment',userAuth.verifyUser,orderController.verifyPayment)
 
 router.get("/user/changePass",userAuth.verifyUser,userController.toAccountSettings)
 router.post('/user/change-password',userAuth.verifyUser,passwordController.changePass);

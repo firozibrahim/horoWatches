@@ -17,12 +17,12 @@
 <body>
   <%-include("../partials/navbar.ejs")%>
     <div class="image-container">
-      <img src="/user/images/main_image.png" class="img-fluid w-100">
-      <div class="image-caption">
+    <a href="/user/toProduct-list"><img src="/user/images/ethoswatches_desktop23_11_2023_1047487180.webp" class="img-fluid w-100"></a>
+      <!-- <div class="image-caption">
         <p class="text-head">TIME IS A LUXURY</p>
         <p class="text-des">A Classic Collection<br> of Luxurious Watches<br> for the Real Gentlemen</p>
         <button class="explore-button" onclick="">Explore</button>
-      </div>
+      </div> -->
     </div>
     <section>
 
@@ -30,38 +30,34 @@
       <br>
       <br>
       <h1 style="text-align:center ">NEW ARRIVALS</h1>
-      <div class="container">
+      <div class="container-fluid">
 
-        <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center carousel">
-          <% product.filter(x=> x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
-            <div class="col Newproduct thumb-wrapper">
-              <div class="card h-100 border-0 item">
-                <div class="img-box" style="height: 200px;">
-                  <a id="special-link" href="/user/toProductView/<%= x._id %>" style="text-decoration: none;color:rgb(6, 3, 3)">
-                    <img src="/product-image/<%= x.images[0] %>" class="card-img-top" alt="image">
-                  </div>
-                  <div class="card-body text-center">
-                    <h5 class="card-title">
-                      <%= x.ProductName %>
-                    </h5>
-                    <p class="mb-3"><strike>
-                        <%=x.Price%>
-                      </strike>₹ <%= x.DiscountAmount %>
 
-                    </p>
-                  </a>
-                    <button class="btn btn-outline-dark shadow-0 rounded-0 w-100"
-                                            onclick="addtocart('<%=x._id%>')" type="button">Add To
-                                            Cart</button>
+          <div class="row row-cols-1 row-cols-md-4 justify-content-center carousel ">
+              <% product.filter(x => x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
+                  <div class="col-12 col-md-3 Newproduct thumb-wrapper">
+                      <div class="card border-0 item">
+                          <div class="img-box rounded-0" style="height: 300px; overflow: hidden;">
+                              <a id="special-link" href="/user/toProductView/<%= x._id %>" style="text-decoration: none; color:rgb(6, 3, 3)">
+                                  <img src="/product-image/<%= x.images[0] %>" class="card-img-top img-fluid rounded-0" style="object-fit: cover; height: 100%;" alt="image">
+                              </a>
+                          </div>
+                          <div class="card-body text-center">
+                              <h5 class="card-title">
+                                  <%= x.ProductName %>
+                              </h5>
+                              <p class="mb-3"><strike><%=x.Price%></strike>₹ <%= x.DiscountAmount %></p>
+                              <a href="#" class="btn btn-outline-dark rounded-1 w-100" onclick="addtocart('<%=x._id%>')">Add To Cart</a>
+                          </div>
+                      </div>
                   </div>
-                </div>
-              </div>
               <% }) %>
-        </div>
+          </div>
+      </div>
       </div>
       <div class="text-center pt-3 mb-3">
         <hr class="mx-5">
-        <a href="/user/toProduct-list/1"><button type="button" class="btn btn-outline-dark rounded-0 w-50 btn-lg">See all</button></a>
+        <a href="/user/toProduct-list/1"><button type="button" class="btn btn-outline-dark rounded- w-50 btn-lg">See all</button></a>
       </div>
       <div class="benefit">
         <div class="container">
@@ -110,15 +106,8 @@
     </div>
     </div>
     <%-include("../partials/footer.ejs")%>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-      <script>
-        var el = document.getElementById("wrapper");
-        var toggleButton = document.getElementById("menu-toggle");
-
-        toggleButton.onclick = function () {
-          el.classList.toggle("toggled");
-        };
-      </script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
       <script>
           function addtocart(id) {
                     console.log(id, "id");
@@ -143,6 +132,7 @@
 
                 }
       </script>
+  <script src="/user/script/navbar.js"></script>
 </body>
 
 </html>

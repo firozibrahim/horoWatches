@@ -9,7 +9,7 @@ const { hashData, verifyHashedData } = require("../utils/hashData");
 const home = async (req, res) => {
   const email= req.session.email
   const user=await User.findOne({Email:email})
-  const product=await productUpload.find()
+  const product=await productUpload.find().limit(6)
   if (req.session.logged&&user.access==="granted") {
     res.render("./user/user-home",{product});
   } else if (req.session.adminlogged) {
@@ -56,7 +56,7 @@ const login = async (req, res) => {
           req.session.user = user.Username;
           req.session.logged = true;
           req.session.email = user.Email;
-          console.log();
+          
           return res.json({ success: true, userAuth: true });
         } else {
           return res.json({ success: false, error: "user is blocked" });
@@ -99,7 +99,7 @@ const signUp = async (req, res) => {
     if (emailExists) {
       res.json({ success: false, message: "USER ALREADY EXIST" });
     } else {
-      console.log(req.body.password);
+      // console.log(req.body.password);
       const hashedPassword = await hashData(req.body.password, 10);
       // console.log(hashedPassword);
       const data = {
@@ -122,8 +122,6 @@ const signUp = async (req, res) => {
 const otpSender = async (req, res) => {
   if (req.session.signotp || req.session.forgot) {
     try {
-      //console.log(req.session.email)
-      //console.log("otp route")
       const email = req.session.email;
       const createdOTP = await sendOTP(email);
       req.session.email = email;
@@ -143,12 +141,10 @@ const otp = (req, res) => {
   res.render("user/otpPage", { err: false });
 };
 const validateOtp = async (req, res) => {
-  // console.log(req.session.userdata);
+
   if (req.session.forgot) {
     try {
       const data = req.session.userdata;
-      // console.log("jjj",data);
-      console.log("forgot confirmation:", data.email);
       const otp = await OTP.findOne({ email: data.email });
       console.log(otp);
       if (Date.now() > otp.expireAt) {
@@ -278,7 +274,7 @@ console.log("reached");
 const userData = async (req,res)=>{
   const email=req.session.email;
   const userData = await User.findOne({Email:email})
-  console.log(userData);
+  // console.log(userData);
   res.render("user/profile",{userData})
 }
 const addAddress = async (req,res)=>{
